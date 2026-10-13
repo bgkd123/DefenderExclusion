@@ -1,1 +1,16 @@
-
+name: Build
+on: [push, workflow_dispatch]
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build
+        shell: pwsh
+        run: |
+          $ref = "C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8"
+          & "$env:WINDIR\Microsoft.NET\Framework64\v4.0.30319\csc.exe" /target:winexe /out:DefenderExclusion.exe /win32manifest:app.manifest /win32icon:icon.ico /optimize+ /reference:System.Windows.Forms.dll /reference:System.Drawing.dll /reference:"$ref\PresentationCore.dll" /reference:"$ref\PresentationFramework.dll" /reference:"$ref\WindowsBase.dll" /reference:"$ref\System.Xaml.dll" /reference:"$ref\WindowsFormsIntegration.dll" DefenderExclusion.cs
+      - uses: actions/upload-artifact@v4
+        with:
+          name: EXE
+          path: DefenderExclusion.exe
